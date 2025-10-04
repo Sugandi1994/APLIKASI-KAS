@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kas Sederhana</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="bg-light">
+    <div class="container py-4">
+      <h2 class="text-center mb-4">📊 Aplikasi Kas Sederhana</h2>
+
+      <div class="row mb-4 text-center">
+        <div class="col-md-4">
+          <div class="card border-success">
+            <div class="card-body">
+              <h5 class="card-title text-success">Total Pemasukan</h5>
+              <h3 id="totalIn">Rp 0</h3>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-danger">
+            <div class="card-body">
+              <h5 class="card-title text-danger">Total Pengeluaran</h5>
+              <h3 id="totalOut">Rp 0</h3>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-primary">
+            <div class="card-body">
+              <h5 class="card-title text-primary">Saldo</h5>
+              <h3 id="saldo">Rp 0</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <form id="formTransaksi" class="mb-4 row g-2">
+        <div class="col-md-2">
+          <select class="form-select" id="jenis">
+            <option value="Pemasukan">Pemasukan</option>
+            <option value="Pengeluaran">Pengeluaran</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <input
+            type="number"
+            id="jumlah"
+            class="form-control"
+            placeholder="Jumlah"
+            required
+          />
+        </div>
+        <div class="col-md-3">
+          <input
+            type="text"
+            id="keterangan"
+            class="form-control"
+            placeholder="Keterangan"
+            required
+          />
+        </div>
+        <div class="col-md-2">
+          <input type="date" id="tanggal" class="form-control" required />
+        </div>
+
+        <div class="col-md-2 d-grid">
+          <button type="submit" class="btn btn-success">Tambah</button>
+        </div>
+      </form>
+
+      <div class="mb-3 text-end">
+        <div class="col-md-1">
+          <input type="month" id="bulanFilter" class="form-control" />
+        </div>
+        <button id="exportXlsx" class="btn btn-primary">📥 Export XLSX</button>
+        <button id="exportPdf" class="btn btn-danger">📄 Export PDF</button>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-striped table-bordered align-middle">
+          <thead class="table-dark">
+            <tr>
+              <th>#</th>
+              <th>Jenis</th>
+              <th>Jumlah</th>
+              <th>Keterangan</th>
+              <th>Tanggal</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tabelData"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
