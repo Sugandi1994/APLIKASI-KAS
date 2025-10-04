@@ -1,0 +1,97 @@
+let data = [];
+
+async function loadData() {
+    const res = await fetch('/api/transaksi');
+    data = await res.json();
+    render();
+}
+
+function formatRupiah(num) {
+    return 'Rp ' + Number(num).toLocaleString('id-ID');
+}
+
+function render() {
+    const tbody = document.getElementById('tabelData');
+    tbody.innerHTML = '';
+    let totalIn=0, totalOut=0;
+
+    const month = document.getElementById('bulanFilter').value;
+    let filtered = data;
+    if (month) {
+        filtered = data.filter(d => d.tanggal.startsWith(month));
+    }
+
+    filtered.forEach((d, i) => {
+        if(d.jenis==='Pemasukan') totalIn+=Number(d.jumlah);
+        else totalOut+=Number(d.jumlah);
+
+        tbody.innerHTML += `
+          <tr>
+            <td>${i+1}</td>
+            <td>${d.jenis}</td>
+            <td>${formatRupiah(d.jumlah)}</td>
+            <td>${d.keterangan}</td>
+            <td>${d.tanggal}</td>
+            <td>
+              <button onclick="editData(${i})" class="btn btn-sm btn-warning">Edit</button>
+              <button onclick="hapusData(${i})" class="btn btn-sm btn-danger">Hapus</button>
+            </td>
+          </tr>`;
+    });
+    document.getElementById('totalIn').textContent = formatRupiah(totalIn);
+    document.getElementById('totalOut').textContent = formatRupiah(totalOut);
+    document.getElementById('saldo').textContent = formatRupiah(totalIn - totalOut);
+}
+
+document.getElementById('formTransaksi').addEventListener('submit', async e=>{
+    e.preventDefault();
+    const jenis=document.getElementById('jenis').value;
+    const jumlah=document.getElementById('jumlah').value;
+    const keterangan=document.getElementById('keterangan').value;
+    const tanggal = document.getElementById('tanggal').value;
+
+
+    await fetch('/api/transaksi',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({jenis, jumlah, keterangan, tanggal})
+    });
+    e.target.reset();
+    loadData();
+});
+
+async function editData(id){
+    const password = prompt('Masukkan password:');
+    const item = data[id];
+    const newJumlah=prompt('Jumlah baru:', item.jumlah);
+    const newKet=prompt('Keterangan baru:', item.keterangan);
+    const newData={...item, jumlah:newJumlah, keterangan:newKet};
+
+    await fetch('/api/transaksi/'+id,{method:'PUT',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({password,data:newData})
+    });
+    loadData();
+}
+
+async function hapusData(id){
+    const password = prompt('Masukkan password:');
+    await fetch('/api/transaksi/'+id,{method:'DELETE',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({password})
+    });
+    loadData();
+}
+
+document.getElementById('bulanFilter').addEventListener('change', render);
+
+document.getElementById('exportXlsx').addEventListener('click', ()=>{
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Data');
+    XLSX.writeFile(wb, 'transaksi.xlsx');
+});
+
+document.getElementById('exportPdf').addEventListener('click', ()=>{
+    window.print();
+});
+document.getElementById('tanggal').value = new Date().toISOString().slice(0,10);
+loadData();
+
+
