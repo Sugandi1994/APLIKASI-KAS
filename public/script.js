@@ -207,7 +207,20 @@ document.getElementById('exportPdf').addEventListener('click', async ()=>{
     pdf.addImage(imgData, 'PNG', 10, 10, 190, 0);
     pdf.save('transaksi.pdf');
 });
-document.getElementById('tanggal').value = new Date().toISOString().slice(0,10);
+function setTanggalToToday() {
+    const tanggalInput = document.getElementById('tanggal');
+    const today = new Date().toISOString().slice(0,10);
+    if (tanggalInput.value !== today) {
+        tanggalInput.value = today;
+    }
+}
+
+// Set tanggal input to today on page load
+setTanggalToToday();
+
+// Update tanggal input every minute to keep it current
+setInterval(setTanggalToToday, 60000);
+
 loadData();
 
 
