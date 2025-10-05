@@ -1,3 +1,5 @@
-- [x] Edit public/index.html: Add a div above the table to display "Total untuk bulan [selected]: Rp XXX"
-- [x] Edit public/script.js: In render(), calculate totalJumlah for filtered data and update the display
-- [ ] Test the functionality by running the app and selecting a month
+# TODO: Perbaiki Ekspor PDF
+
+- [x] Tambahkan script jsPDF dan html2canvas ke public/index.html
+- [x] Modifikasi fungsi exportPdf di public/script.js untuk mengekspor hanya tabel
+- [ ] Test ekspor PDF

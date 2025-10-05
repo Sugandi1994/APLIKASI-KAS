@@ -104,8 +104,38 @@ document.getElementById('exportXlsx').addEventListener('click', ()=>{
     XLSX.writeFile(wb, 'transaksi.xlsx');
 });
 
-document.getElementById('exportPdf').addEventListener('click', ()=>{
-    window.print();
+document.getElementById('exportPdf').addEventListener('click', async ()=>{
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF();
+
+    // Create a temporary container to hold the totalBulan and table for export
+    const exportContainer = document.createElement('div');
+    const totalBulan = document.getElementById('totalBulan');
+    const tableResponsive = document.querySelector('.table-responsive');
+
+    // Clone the nodes to avoid modifying the original DOM
+    const totalBulanClone = totalBulan.cloneNode(true);
+    const tableClone = tableResponsive.cloneNode(true);
+
+    // Append clones to the container
+    exportContainer.appendChild(totalBulanClone);
+    exportContainer.appendChild(tableClone);
+
+    // Append container to body (hidden) so html2canvas can render it
+    exportContainer.style.position = 'fixed';
+    exportContainer.style.left = '-9999px';
+    exportContainer.style.top = '0';
+    document.body.appendChild(exportContainer);
+
+    // Use html2canvas on the container
+    const canvas = await html2canvas(exportContainer);
+    const imgData = canvas.toDataURL('image/png');
+
+    // Remove the container after rendering
+    document.body.removeChild(exportContainer);
+
+    pdf.addImage(imgData, 'PNG', 10, 10, 190, 0);
+    pdf.save('transaksi.pdf');
 });
 document.getElementById('tanggal').value = new Date().toISOString().slice(0,10);
 loadData();
