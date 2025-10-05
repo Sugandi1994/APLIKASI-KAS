@@ -119,6 +119,25 @@ document.getElementById('exportPdf').addEventListener('click', async ()=>{
 
     // Append clones to the container
     exportContainer.appendChild(totalBulanClone);
+
+    // Remove "Aksi" column from cloned table
+    // Remove last <th> in thead
+    const thead = tableClone.querySelector('thead');
+    if (thead) {
+        const ths = thead.querySelectorAll('th');
+        if (ths.length > 0) {
+            ths[ths.length - 1].remove();
+        }
+    }
+    // Remove last <td> in each tbody row
+    const tbodyRows = tableClone.querySelectorAll('tbody tr');
+    tbodyRows.forEach(row => {
+        const tds = row.querySelectorAll('td');
+        if (tds.length > 0) {
+            tds[tds.length - 1].remove();
+        }
+    });
+
     exportContainer.appendChild(tableClone);
 
     // Append container to body (hidden) so html2canvas can render it
