@@ -7,3 +7,9 @@ h2 {
 .table td, .table th {
     vertical-align: middle;
 }
+
+/* Tambahkan border pada tabel */
+.table, .table th, .table td {
+    border: 1px solid #dee2e6;
+    border-collapse: collapse;
+}
