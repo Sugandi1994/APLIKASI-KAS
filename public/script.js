@@ -39,17 +39,16 @@ function render() {
           </tr>`;
     });
 
-    // Calculate totalJumlah for all filtered data
-    let totalJumlah = filtered.reduce((acc, d) => acc + Number(d.jumlah), 0);
-
     // Update the new total display above the table
     const totalBulanDiv = document.getElementById('totalBulan');
     const bulanSelectedSpan = document.getElementById('bulanSelected');
-    const totalJumlahStrong = document.getElementById('totalJumlah');
+    const totalPemasukanStrong = document.getElementById('totalPemasukan');
+    const totalPengeluaranStrong = document.getElementById('totalPengeluaran');
 
     if (month) {
         bulanSelectedSpan.textContent = month;
-        totalJumlahStrong.textContent = formatRupiah(totalJumlah);
+        totalPemasukanStrong.textContent = formatRupiah(totalIn);
+        totalPengeluaranStrong.textContent = formatRupiah(totalOut);
         totalBulanDiv.style.display = 'block';
     } else {
         totalBulanDiv.style.display = 'none';
