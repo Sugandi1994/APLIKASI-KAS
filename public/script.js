@@ -1,4 +1,5 @@
 let data = [];
+let currentSort = { column: null, order: 'asc' };
 
 async function loadData() {
     const res = await fetch('/api/transaksi');
@@ -10,6 +11,33 @@ function formatRupiah(num) {
     return 'Rp ' + Number(num).toLocaleString('id-ID');
 }
 
+function compareValues(key, order = 'asc') {
+    return function(a, b) {
+        let varA = a[key];
+        let varB = b[key];
+
+        // For numeric sorting on jumlah
+        if (key === 'jumlah') {
+            varA = Number(varA);
+            varB = Number(varB);
+        }
+
+        // For date sorting on tanggal
+        if (key === 'tanggal') {
+            varA = new Date(varA);
+            varB = new Date(varB);
+        }
+
+        if (varA < varB) {
+            return order === 'asc' ? -1 : 1;
+        }
+        if (varA > varB) {
+            return order === 'asc' ? 1 : -1;
+        }
+        return 0;
+    };
+}
+
 function render() {
     const tbody = document.getElementById('tabelData');
     tbody.innerHTML = '';
@@ -19,6 +47,14 @@ function render() {
     let filtered = data;
     if (month) {
         filtered = data.filter(d => d.tanggal.startsWith(month));
+    }
+
+    // Sort filtered data if sorting is set
+    if (currentSort.column && currentSort.column !== 'index') {
+        filtered.sort(compareValues(currentSort.column, currentSort.order));
+    } else if (currentSort.column === 'index') {
+        // Sort by original index ascending or descending
+        filtered = currentSort.order === 'asc' ? filtered : filtered.slice().reverse();
     }
 
     filtered.forEach((d, i) => {
@@ -58,6 +94,21 @@ function render() {
     document.getElementById('totalOut').textContent = formatRupiah(totalOut);
     document.getElementById('saldo').textContent = formatRupiah(totalIn - totalOut);
 }
+
+// Add event listeners to headers for sorting
+document.querySelectorAll('th[data-sort]').forEach(th => {
+    th.addEventListener('click', () => {
+        const column = th.getAttribute('data-sort');
+        if (currentSort.column === column) {
+            // Toggle order
+            currentSort.order = currentSort.order === 'asc' ? 'desc' : 'asc';
+        } else {
+            currentSort.column = column;
+            currentSort.order = 'asc';
+        }
+        render();
+    });
+});
 
 document.getElementById('formTransaksi').addEventListener('submit', async e=>{
     e.preventDefault();
