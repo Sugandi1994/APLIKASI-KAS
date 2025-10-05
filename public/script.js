@@ -38,6 +38,23 @@ function render() {
             </td>
           </tr>`;
     });
+
+    // Calculate totalJumlah for all filtered data
+    let totalJumlah = filtered.reduce((acc, d) => acc + Number(d.jumlah), 0);
+
+    // Update the new total display above the table
+    const totalBulanDiv = document.getElementById('totalBulan');
+    const bulanSelectedSpan = document.getElementById('bulanSelected');
+    const totalJumlahStrong = document.getElementById('totalJumlah');
+
+    if (month) {
+        bulanSelectedSpan.textContent = month;
+        totalJumlahStrong.textContent = formatRupiah(totalJumlah);
+        totalBulanDiv.style.display = 'block';
+    } else {
+        totalBulanDiv.style.display = 'none';
+    }
+
     document.getElementById('totalIn').textContent = formatRupiah(totalIn);
     document.getElementById('totalOut').textContent = formatRupiah(totalOut);
     document.getElementById('saldo').textContent = formatRupiah(totalIn - totalOut);
